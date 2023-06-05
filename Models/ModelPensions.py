@@ -44,7 +44,10 @@ class ModelPensions():
     def get_pension_all(self, db):
         try:
             cursor = db.connection.cursor()
-            sql = "SELECT photo, name, description, price, availability, owner_id FROM pensions WHERE 1"
+            sql = """SELECT pensions.photo, pensions.name, pensions.description, pensions.price, pensions.availability, user.name AS owner_name 
+                    FROM pensions 
+                    INNER JOIN user ON pensions.owner_id = user.id"""
+
             cursor.execute(sql)
             results = cursor.fetchall()
             
