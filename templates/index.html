@@ -2,6 +2,25 @@
 
 {% block title %} PENSIONES UDC 2023 {% endblock %}
 
+{% block userInformation %}
+  {% if currentUser %}
+
+  {% else %}
+    <li class="nav-item dropdown no-arrow">
+      <a href="{{ url_for('login') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"></a>
+      <i class="fas fa-download fa-sm text white-50"></i> Login </a>
+    </li>
+
+    <div class="topbar-divider d-none d-sm-block"></div>
+    
+    <li class="nav-item dropdown no-arrow">
+      <a href="{{ url_for('register') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"></a>
+      <i class="fas fa-download fa-sm text white-50"></i> Register </a>
+    </li>
+  {% endif %}
+
+{% endblock %}
+
 {% block body %}
 
     <h1>Bienvenido o bienvenida!!!</h1>

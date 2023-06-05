@@ -1,20 +1,89 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, render_template, request, redirect, url_for, flash
+from flask_mysqldb import MySQL
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+
+from config import config
+
+# Models
+from Models.ModelUser import ModelUser
+
+# Entities
+from Models.entities.User import User
+
 
 app = Flask(__name__)
 
+app.config.from_object(config['development'])
+db = MySQL(app)
+login_manager_app = LoginManager(app)
+
+@login_manager_app.user_loader
+def load_user(id):
+    return ModelUser.get_by_id(db,id)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('/')) 
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        print(username)
+        print(password)
+        
+        try:
+            useradd = ModelUser.add_user(db, username, password)
+            flash('Usuario registrado exitosamente', 'success')
+            return redirect(url_for('login'))
+        except Exception as ex:
+            flash('Error al registrar el usuario', 'error')
+            return redirect(url_for('auth/register.html'))
+    return render_template('auth/register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user = User(0,request.form['username'],request.form['password'])
+        logged_user = ModelUser.login(db,user)
+        if logged_user != None:
+            if logged_user.password:
+                login_user(logged_user)
+                return redirect(url_for('/'))
+            else:
+                flash("Invalid password...")
+                return render_template('auth/login.html')
+        else:
+            flash("User not found...")
+            return render_template('auth/login.html')
+    else:
+        return render_template('auth/login.html')   
+
 # Ruta de inicio
 @app.route('/')
-def principal():
+def index():
     cards = [{'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-             {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'}
-             ]
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'}
+            ]
     return render_template('index.html', cards=cards)
 
-if __name__ == '__main__':
+def status_401(error):
+    return redirect(url_for('/'))
+
+def status_404(error):
+    return redirect(url_for('/'))
+
+if __name__ == '__main__':                                  
+    app.register_error_handler(401, status_401)
+    app.register_error_handler(404, status_404)
     app.run(debug=True)
