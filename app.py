@@ -6,6 +6,7 @@ from config import config
 
 # Models
 from Models.ModelUser import ModelUser
+from Models.ModelPensions import Pension
 
 # Entities
 from Models.entities.User import User
@@ -24,19 +25,21 @@ def load_user(id):
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('/')) 
+    return redirect(url_for('index')) 
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        name = request.form['FirstName']
+        last_name = request.form['LastName']
         username = request.form['username']
         password = request.form['password']
-        print(username)
-        print(password)
-        
+        id_card = request.form['id_card']
+        phone = request.form['phone']
+
         try:
-            useradd = ModelUser.add_user(db, username, password)
+            useradd = ModelUser.add_user(db, id_card, name, last_name, username, phone, password)
             flash('Usuario registrado exitosamente', 'success')
             return redirect(url_for('login'))
         except Exception as ex:
@@ -48,12 +51,12 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User(0,request.form['username'],request.form['password'])
+        user = User(0,0,0,0,request.form['username'],0,request.form['password'])
         logged_user = ModelUser.login(db,user)
         if logged_user != None:
             if logged_user.password:
                 login_user(logged_user)
-                return redirect(url_for('/'))
+                return redirect(url_for('index'))
             else:
                 flash("Invalid password...")
                 return render_template('auth/login.html')
@@ -66,16 +69,28 @@ def login():
 # Ruta de inicio
 @app.route('/')
 def index():
-    cards = [{'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-            {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'}
-            ]
-    return render_template('index.html', cards=cards)
+    if current_user.is_authenticated:
+        cards = [{'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'}
+                ]
+        return render_template('index.html', cards=cards)
+    else:
+        cards = [{'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
+                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'}
+                ]
+        return render_template('index.html', cards=cards)
 
 def status_401(error):
     return redirect(url_for('/'))
