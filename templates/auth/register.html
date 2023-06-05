@@ -2,7 +2,7 @@
 
 {% block title %} Register {% endblock %}
 
-{% if currentUser %}
+{% if current_user.is_authenticated %}
     {{ url_for('index') }}
 {% else %}
     {% block body %}
