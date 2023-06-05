@@ -2,12 +2,12 @@ from .entities.Pensions import Pension
 import os
 import re
 
-class ModelPensions:
+class ModelPensions():
 
     @classmethod
     def create_pension(self, db, pension):
         try:
-            cursor = self.db.cursor()
+            cursor = db.connection.cursor()
 
             # Guardar la foto en el directorio "static/photos"
             photo_filename = secure_filename(pension.photo.filename)
@@ -27,7 +27,7 @@ class ModelPensions:
     @classmethod
     def get_pension_by_id(self, db, pension_id):
         try:
-            cursor = self.db.cursor()
+            cursor = db.connection.cursor()
             sql = "SELECT * FROM pensions WHERE id = %s"
             values = (pension_id,)
             cursor.execute(sql, values)
@@ -43,14 +43,18 @@ class ModelPensions:
     @classmethod
     def get_pension_all(self, db):
         try:
-            cursor = self.db.cursor()
-            sql = "SELECT * FROM pensions"
+            cursor = db.connection.cursor()
+            sql = "SELECT photo, name, description, price, availability, owner_id FROM pensions WHERE 1"
             cursor.execute(sql)
-            result = cursor.fetchone()
-            if result:
+            results = cursor.fetchall()
+            
+            pensions = []
+
+            for result in results:
                 pension = Pension(*result)
-                return pension
-            return None
+                pensions.append(pension)
+            
+            return pensions
         except Exception as e:
             print("Error in get_pension_all:", e)
             raise

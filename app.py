@@ -6,7 +6,7 @@ from config import config
 
 # Models
 from Models.ModelUser import ModelUser
-from Models.ModelPensions import Pension
+from Models.ModelPensions import ModelPensions
 
 # Entities
 from Models.entities.User import User
@@ -81,15 +81,7 @@ def index():
                 ]
         return render_template('index.html', cards=cards)
     else:
-        cards = [{'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'},
-                {'title':'Mansión','description':'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Beatae sint voluptate exercitationem voluptas culpa eaque ipsam?'}
-                ]
+        cards = ModelPensions.get_pension_all(db)
         return render_template('index.html', cards=cards)
 
 def status_401(error):
