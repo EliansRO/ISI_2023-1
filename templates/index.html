@@ -2,6 +2,53 @@
 
 {% block title %} PENSIONES UDC 2023 {% endblock %}
 
+{% block opciones %}
+
+  {% if current_user.is_authenticated %}
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Opciones
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Pensiones</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Pensiones opciones:</h6>
+                <a class="collapse-item" href="buttons.html">Mis Pensiones</a>
+                <a class="collapse-item" href="cards.html">Ajustes</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Ajustes</span>
+        </a>
+        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Ajustes de usuario:</h6>
+                <a class="collapse-item" href="utilities-color.html">Colors</a>
+                <a class="collapse-item" href="utilities-border.html">Borders</a>
+                <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                <a class="collapse-item" href="utilities-other.html">Other</a>
+            </div>
+        </div>
+    </li>
+  {% endif %}
+
+{% endblock %}
+
 {% block userInformation %}
   {% if current_user.is_authenticated %}
     <!-- Nav Item - User Information -->
@@ -50,7 +97,7 @@
 
 {% block body %}
 
-    <h1>Bienvenido o bienvenida!!!</h1>
+    {% block namepage %} Propiedades Registradas {% endblock %}
 
     {% block cards %}
     {% with messages = get_flashed_messages() %}
@@ -74,7 +121,7 @@
                 <h2 class="card-title">{{card.name}}</h2>
                 <h5 class="card-subtitle text-muted">{{card.owner_id}}</h5>
                 <p class="card-text">{{card.description}}</p>
-                <a href="#" class="btn btn-primary">{{card.price}}</a>
+                <a href="#" class="btn btn-primary">${{card.price}}</a>
               </div>
             </div>
           {% endfor %}
@@ -87,7 +134,7 @@
 
     {% if current_user.is_authenticated %}
             <!-- Logout Modal-->
-          <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
           aria-hidden="true">
           <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -104,7 +151,7 @@
                   </div>
               </div>
           </div>
-      </div>
+        </div>
     {% endif %}
 
 {% endblock %}
