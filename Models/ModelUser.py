@@ -21,6 +21,18 @@ class ModelUser():
             raise Exception(ex)
         
     @classmethod
+    def update(self, db, user):
+        try:
+            cursor = db.connection.cursor()
+            sql = "UPDATE user SET name = %s, last_name = %s, username = %s, phone = %s WHERE id = %s "
+            cursor.execute(sql, (user.name, user.last_name, user.username, user.phone, user.id))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print("Error in update_user:", e)
+            return False
+        
+    @classmethod
     def get_by_id(self, db, id):
         try:
             cursor = db.connection.cursor()

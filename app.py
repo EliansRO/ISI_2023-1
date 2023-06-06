@@ -48,6 +48,38 @@ def register():
     return render_template('auth/register.html')
 
 
+@app.route('/user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def update_user(user_id):
+    if request.method == 'GET':
+        print("GET")
+        return render_template('update_user.html')
+    if request.method == 'POST':
+        print("POST")
+        name = request.form['FirstName']
+        last_name = request.form['LastName']
+        username = request.form['username']
+        phone = request.form['phone']
+
+        try:
+            user = User(user_id,0,name,last_name,username,phone,0)
+            update_user_validate = ModelUser.update(db,user)
+
+            if update_user_validate == True:
+                print("GOOD")
+                flash("Update complete...")
+                return redirect(url_for('index'))
+            else:
+                print("ERROR")
+                flash("Update fail...", 'error')
+                return redirect(url_for('index'))
+        except Exception as ex:
+            print("ERROR")
+            flash("Update fail...", 'error')
+            return redirect(url_for('index'))
+    else:
+        return render_template('update_user.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':

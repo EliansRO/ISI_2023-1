@@ -3,7 +3,6 @@
 {% block title %} PENSIONES UDC 2023 {% endblock %}
 
 {% block userInformation %}
-  {% if current_user.is_authenticated %}
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -19,7 +18,7 @@
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                 Profile
             </a>
-            <a class="dropdown-item" href="{{ url_for('update_user', user_id=current_user.id) }}">
+            <a class="dropdown-item" href="#">
                 <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                 Settings
             </a>
@@ -30,62 +29,60 @@
             </a>
         </div>
     </li>
-
-
-  {% else %}
-    <li class="nav-item dropdown no-arrow">
-      <a href="{{ url_for('login') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"></a>
-      <i class="fas fa-download fa-sm text white-50"></i> Login </a>
-    </li>
-
-    <div class="topbar-divider d-none d-sm-block"></div>
-    
-    <li class="nav-item dropdown no-arrow">
-      <a href="{{ url_for('register') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"></a>
-      <i class="fas fa-download fa-sm text white-50"></i> Register </a>
-    </li>
-  {% endif %}
-
 {% endblock %}
 
 {% block body %}
 
-    <h1>Bienvenido o bienvenida!!!</h1>
+    <h1>ACTUALIZAR USUARIO</h1>
 
     {% block cards %}
-    {% with messages = get_flashed_messages() %}
+        <div class="d-flex flex-wrap justify-content-around">
 
-      {% if messages %}
-        <br/>
-        {% for message in messages %}
-          <div class="alert alert-primary alert-dismissible fade show" role="alert">
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              <strong>{{ message }}</strong>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
-      <div class="d-flex flex-wrap justify-content-around">
-          {% for card in cards: %}
-          <div class="card mb-4" style="width: 18rem;">
-              <img src="{{card.photo}}" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h2 class="card-title">{{card.name}}</h2>
-                <h5 class="card-subtitle text-muted">{{card.owner_id}}</h5>
-                <p class="card-text">{{card.description}}</p>
-                <a href="#" class="btn btn-primary">{{card.price}}</a>
-              </div>
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Actualizar usuario</h1>
+                    </div>
+                    <form class="user" action="{{ url_for('update_user', user_id=current_user.id) }}" method="POST">
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="text" class="form-control form-control-user" id="FirstName" name="FirstName"
+                                    value="{{  current_user.name  }}">
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-user" id="LastName" name="LastName"
+                                    value="{{  current_user.last_name  }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control form-control-user" id="username" name="username"
+                                value="{{  current_user.username  }}">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="tel" class="form-control form-control-user" id="phone" name="phone"
+                                    value="{{ current_user.phone }}" required pattern="[0-9]{10}" maxlength="10">
+                            </div>
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="text" name="id_card" class="form-control form-control-user" id="id_card"
+                                    value="{{ current_user.id_card }}" pattern="[0-9]{9,14}" readonly>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Update Account</button>
+                    </form>
+                </div>
             </div>
-          {% endfor %}
-      </div>
+
+
+
+        </div>
     {% endblock %}
 
 {% endblock %}
 
 {% block logoutmodal %}
 
-    {% if current_user.is_authenticated %}
+    {% if current_user %}
             <!-- Logout Modal-->
           <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
           aria-hidden="true">
