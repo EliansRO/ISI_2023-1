@@ -1,0 +1,107 @@
+{% extends './layout.html' %}
+
+{% block title %} PENSIONES UDC 2023 {% endblock %}
+
+{% block userInformation %}
+    <!-- Nav Item - User Information -->
+    <li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{current_user.name}}</span>
+            <img class="img-profile rounded-circle"
+                src="{{ url_for('static', filename='img/undraw_profile.svg') }}">
+        </a>
+        <!-- Dropdown - User Information -->
+        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+            aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="#">
+                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                Profile
+            </a>
+            <a class="dropdown-item" href="#">
+                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{  url_for('logout')  }}" data-toggle="modal" data-target="#logoutModal">
+                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                Logout
+            </a>
+        </div>
+    </li>
+{% endblock %}
+
+{% block body %}
+
+    <h1>AÑADIR PENSION</h1>
+
+    {% block cards %}
+        <div class="d-flex flex-wrap justify-content-around">
+
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Añadir Pension</h1>
+                    </div>
+                    <form class="user" action="{{ url_for('update_user', user_id=current_user.id) }}" method="POST">
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="text" class="form-control form-control-user" id="FirstName" name="FirstName"
+                                    value="{{  current_user.name  }}">
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-user" id="LastName" name="LastName"
+                                    value="{{  current_user.last_name  }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control form-control-user" id="username" name="username"
+                                value="{{  current_user.username  }}">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="tel" class="form-control form-control-user" id="phone" name="phone"
+                                    value="{{ current_user.phone }}" required pattern="[0-9]{10}" maxlength="10">
+                            </div>
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="text" name="id_card" class="form-control form-control-user" id="id_card"
+                                    value="{{ current_user.id_card }}" pattern="[0-9]{9,14}" readonly>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Update Account</button>
+                    </form>
+                </div>
+            </div>
+
+
+
+        </div>
+    {% endblock %}
+
+{% endblock %}
+
+{% block logoutmodal %}
+
+    {% if current_user %}
+            <!-- Logout Modal-->
+          <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                  <div class="modal-footer">
+                      <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                      <a class="btn btn-primary" href="{{ url_for('logout') }}">Logout</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+    {% endif %}
+
+{% endblock %}

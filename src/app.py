@@ -10,6 +10,7 @@ from Models.ModelPensions import ModelPensions
 
 # Entities
 from Models.entities.User import User
+from Models.entities.Pensions import Pension
 
 
 app = Flask(__name__)
@@ -22,12 +23,105 @@ login_manager_app = LoginManager(app)
 def load_user(id):
     return ModelUser.get_by_id(db,id)
 
+# Ruta de crear pensiones
+@app.route('/create_pension/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def create_pension(user_id):
+    if user_id != current_user.id:
+        print("user_id fail.")
+        return redirect(url_for('index'))
+    else:
+        print("USER_ID")
+        if request.method == 'GET':
+            try:
+                print("GET")
+                return render_template('create_pension.html')
+            except Exception as ex:
+                print("Get ERROR.")
+                flash("Get fail...", 'error')
+                return redirect(url_for('index'))
+        if request.method == 'POST':
+            print("POST")
+
+            name = request.form['name']
+            description = request.form['description']
+            price = request.form['price']
+            photo = request.form['photo']
+
+            try:
+                pension = Pension(photo,name,description,price,1,user_id)
+                create_pension_validate = ModelPensions.create_pension(db,pension)
+
+                if create_pension_validate == True:
+                    print("GOOD")
+                    flash("Create complete...")
+                    return redirect(url_for('index'))
+                else:
+                    print("ERROR")
+                    flash("Create fail...", 'error')
+                    return redirect(url_for('index'))
+            except Exception as ex:
+                print("ERROR")
+                flash("Update fail...", 'error')
+                return redirect(url_for('index'))
+        else:
+            print("Post ERROR.")
+            return redirect(url_for('index'))
+
+# Ruta de pensiones del usuario
+@app.route('/pensions/<int:user_id>')
+@login_required
+def pensions_user(user_id):
+    if user_id != current_user.id:
+        return redirect(url_for('index'))
+    else:
+        cards = ModelPensions.get_pensionsByUserid(db, user_id)
+        return render_template('user_pensions.html', cards=cards)
+
+#Ruta de actualizar usuario
+@app.route('/user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def update_user(user_id):
+    if user_id != current_user.id:
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'GET':
+            print("GET")
+            return render_template('update_user.html')
+        if request.method == 'POST':
+            print("POST")
+            name = request.form['FirstName']
+            last_name = request.form['LastName']
+            username = request.form['username']
+            phone = request.form['phone']
+
+            try:
+                user = User(user_id,0,name,last_name,username,phone,0)
+                update_user_validate = ModelUser.update(db,user)
+
+                if update_user_validate == True:
+                    print("GOOD")
+                    flash("Update complete...")
+                    return redirect(url_for('index'))
+                else:
+                    print("ERROR")
+                    flash("Update fail...", 'error')
+                    return redirect(url_for('index'))
+            except Exception as ex:
+                print("ERROR")
+                flash("Update fail...", 'error')
+                return redirect(url_for('index'))
+        else:
+            return render_template('update_user.html')
+
+#Ruta logout
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
-    return redirect(url_for('index')) 
+    return redirect(url_for('index'))
 
-
+#Ruta de registrar usuario
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -45,41 +139,12 @@ def register():
         except Exception as ex:
             flash('Error al registrar el usuario', 'error')
             return redirect(url_for('auth/register.html'))
-    return render_template('auth/register.html')
-
-
-@app.route('/user/<int:user_id>', methods=['GET', 'POST'])
-@login_required
-def update_user(user_id):
-    if request.method == 'GET':
-        print("GET")
-        return render_template('update_user.html')
-    if request.method == 'POST':
-        print("POST")
-        name = request.form['FirstName']
-        last_name = request.form['LastName']
-        username = request.form['username']
-        phone = request.form['phone']
-
-        try:
-            user = User(user_id,0,name,last_name,username,phone,0)
-            update_user_validate = ModelUser.update(db,user)
-
-            if update_user_validate == True:
-                print("GOOD")
-                flash("Update complete...")
-                return redirect(url_for('index'))
-            else:
-                print("ERROR")
-                flash("Update fail...", 'error')
-                return redirect(url_for('index'))
-        except Exception as ex:
-            print("ERROR")
-            flash("Update fail...", 'error')
-            return redirect(url_for('index'))
+    elif request.method == 'GET':
+        return render_template('auth/register.html')
     else:
-        return render_template('update_user.html')
+        return redirect(url_for('index'))
 
+#Ruta de login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -96,14 +161,7 @@ def login():
             flash("User not found...")
             return render_template('auth/login.html')
     else:
-        return render_template('auth/login.html')   
-
-# Ruta de inicio
-@app.route('/pensions/<int:user_id>')
-@login_required
-def pensions_user(user_id):
-    cards = ModelPensions.get_pensionsByUserid(db, user_id)
-    return render_template('user_pensions.html', cards=cards)
+        return render_template('auth/login.html')
 
 # Ruta de inicio
 @app.route('/')

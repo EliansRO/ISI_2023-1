@@ -73,9 +73,16 @@
     </li>
 {% endblock %}
 
-{% block body %}
+{% block namepage %} Mis Pensiones {% endblock %}
 
-    {% block namepage %} Propiedades Propias {% endblock %}
+{% block drop_option %}
+    <a href="{{ url_for('create_pension', user_id=current_user.id) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-download fa-sm text-white-50"></i> 
+        Añadir Pension
+    </a>
+{% endblock %}
+
+{% block body %}
 
     {% block cards %}
         {% with messages = get_flashed_messages() %}
