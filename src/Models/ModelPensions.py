@@ -15,14 +15,13 @@ class ModelPensions():
             pension.photo.save(photo_path)
 
             sql = "INSERT INTO pensions (photo, name, description, price, availability, owner_id) VALUES (%s, %s, %s, %s, %s, %s)"
-            values = (photo_path, pension.name, pension.description, pension.price, pension.availability, pension.owner_id)
-            cursor.execute(sql, values)
-            self.db.commit()
-            return cursor.lastrowid
+            cursor.execute(sql, (photo_path, pension.name, pension.description, pension.price, pension.availability, pension.owner_id))
+            db.connection.commit()
+            return True
         except Exception as e:
             print("Error in create_pension:", e)
-            self.db.rollback()
-            raise
+            db.rollback()
+            return False
     
     @classmethod
     def get_pensionsByUserid(self, db, user_id):

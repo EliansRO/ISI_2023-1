@@ -37,44 +37,34 @@
 
     {% block cards %}
         <div class="d-flex flex-wrap justify-content-around">
-
             <div class="col-lg-7">
                 <div class="p-5">
                     <div class="text-center">
                         <h1 class="h4 text-gray-900 mb-4">Añadir Pension</h1>
                     </div>
-                    <form class="user" action="{{ url_for('update_user', user_id=current_user.id) }}" method="POST">
-                        <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="text" class="form-control form-control-user" id="FirstName" name="FirstName"
-                                    value="{{  current_user.name  }}">
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control form-control-user" id="LastName" name="LastName"
-                                    value="{{  current_user.last_name  }}">
-                            </div>
+                    <form class="user" action="{{ url_for('create_pension', user_id=current_user.id) }}" method="POST">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-user" id="name" name="name"
+                                placeholder="Añada un nombre">
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-control form-control-user" id="username" name="username"
-                                value="{{  current_user.username  }}">
+                            <input type="text" class="form-control form-control-user" id="description" name="description"
+                                placeholder="Añada una descripción">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control form-control-user" id="LastName" name="LastName"
+                                placeholder="Añada un precio">
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="tel" class="form-control form-control-user" id="phone" name="phone"
-                                    value="{{ current_user.phone }}" required pattern="[0-9]{10}" maxlength="10">
-                            </div>
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <input type="text" name="id_card" class="form-control form-control-user" id="id_card"
-                                    value="{{ current_user.id_card }}" pattern="[0-9]{9,14}" readonly>
+                                <label for="" class="form-label">Añada una Foto</label>
+                                <input type="file" class="form-control" name="photo" id="photo" placeholder="Foto" aria-describedby="fileHelpId">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-user btn-block">Update Account</button>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Crear Pension</button>
                     </form>
                 </div>
             </div>
-
-
-
         </div>
     {% endblock %}
 
