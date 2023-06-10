@@ -1,2 +1,5 @@
 FLASK:
 https://github.com/CoreyMSchafer/code_snippets/tree/master/Python/Flask_Blog
+
+Flask Libraries:
+pip install flask flask-login flask-mysqldb flask-WTF
